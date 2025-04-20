@@ -21,3 +21,4 @@ Este proyecto nació en esas largas noches de estudio, cuando me encontraba busc
 ## ❗ Aclaración
 
 El proyecto puede contener fallos o no estar completo. ¡Con el tiempo se irá actualizando para añadir nuevas funciones!
+Además, al ser de código abierto cualquiera puede contribuir a la mejora del mismo, asegurando también absoluta transparencia.
