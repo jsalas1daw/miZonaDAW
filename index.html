@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>miZonaDAW</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.20.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.20.0/firebase-database-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.20.0/firebase-storage-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.20.0/firebase-auth-compat.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/png" href="img/icono.png">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Autenticación Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full relative">
+            <!-- Botón de cierre (X) -->
+            <div id="close-auth-modal" class="modal-close">
+                <i class="fas fa-times text-gray-500 text-xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Iniciar Sesión como Administrador</h2>
+            <p class="mb-4 text-gray-600">Solo el administrador puede crear, editar y eliminar entradas.</p>
+            <div class="mb-4 relative">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    Contraseña
+                </label>
+                <input id="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline pr-10" placeholder="Contraseña">
+                <!-- Botón para mostrar/ocultar contraseña -->
+                <span id="toggle-password" class="password-toggle">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            <div class="flex items-center justify-end">
+                <button id="login-btn" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Entrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <button id="toggle-theme-btn" class="text-xl text-gray-600 hover:text-gray-800 mr-4 flex items-center">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">miZonaDAW</h1>
+                        <p class="text-gray-600">Un largo recorrido por el Curso</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <!-- otros botones (sin el toggle-theme-btn) -->
+                    <a id="github-link" href="https://github.com/jsalas1daw/miZonaDAW" target="_blank" 
+                       class="github-btn mr-4 bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg flex items-center shadow-sm">
+                        <i class="fab fa-github text-lg mr-2"></i>
+                        <span class="hidden sm:inline">GitHub</span>
+                    </a>
+                    <button id="login-header-btn" class="text-sm text-gray-600 hover:text-gray-800 mr-4">
+                        Iniciar sesión
+                    </button>
+                    <button id="logout-btn" class="hidden text-sm text-gray-600 hover:text-gray-800 mr-4">
+                        Cerrar sesión
+                    </button>
+                    <button id="new-entry-btn" class="hidden bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all">
+                        <i class="fas fa-plus mr-2"></i>Nueva Entrada
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- GitHub URL Config Modal -->
+    <div id="github-config-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full relative">
+            <!-- Botón de cierre (X) -->
+            <div id="close-github-modal" class="modal-close">
+                <i class="fas fa-times text-gray-500 text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Configuración de GitHub</h2>
+            <p class="mb-4 text-gray-600">Introduce la URL de tu repositorio en GitHub.</p>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="github-url">
+                    URL del repositorio
+                </label>
+                <input id="github-url" type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" placeholder="https://github.com/tu-usuario/tu-repositorio">
+            </div>
+            <div class="flex justify-end">
+                <button id="save-github-btn" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Sidebar -->
+            <aside class="w-full md:w-1/4 space-y-6">
+                <!-- Búsqueda -->
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Buscar</h3>
+                    <div class="relative">
+                        <input id="search-input" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Buscar entradas...">
+                        <button class="absolute right-2 top-2.5 text-gray-500">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Filtros</h3>
+                    
+                    <!-- Calendario -->
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Por fecha</h4>
+                        <input id="date-filter" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Tags -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Por etiquetas</h4>
+                        <div id="tag-cloud" class="flex flex-wrap gap-2">
+                            <!-- Los tags se generan dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas (solo visible para administradores) -->
+                <div id="admin-stats" class="bg-white p-4 rounded-lg shadow-sm hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Estadísticas</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Resumen</h4>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-gray-600">Total entradas:</span>
+                                <span id="stats-total-entries" class="font-semibold">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Total etiquetas:</span>
+                                <span id="stats-total-tags" class="font-semibold">0</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Etiquetas populares</h4>
+                            <div id="stats-top-tags" class="flex flex-wrap gap-2">
+                                <p class="text-gray-500 text-center text-sm w-full">No hay datos disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Tools (solo visible para administradores) -->
+                <div id="admin-tools" class="bg-white p-4 rounded-lg shadow-sm hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Herramientas de Admin</h3>
+                    <div class="space-y-2">
+                        <button id="export-data-btn" class="w-full text-left px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 flex items-center">
+                            <i class="fas fa-download mr-2"></i> Exportar datos
+                        </button>
+                        <button id="import-data-btn" class="w-full text-left px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 flex items-center">
+                            <i class="fas fa-upload mr-2"></i> Importar datos
+                        </button>
+                        <input type="file" id="import-file" accept=".json" class="hidden">
+                        <button id="config-github-btn" class="w-full text-left px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 flex items-center">
+                            <i class="fab fa-github mr-2"></i> Configurar GitHub
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <div class="w-full md:w-3/4">
+                <!-- Formulario para nueva/editar entrada (oculto por defecto) -->
+                <div id="entry-form" class="hidden bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <h2 id="form-title" class="text-xl font-bold text-gray-800 mb-4">Nueva Entrada</h2>
+                    <form id="blog-form">
+                        <input type="hidden" id="entry-id" value="">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="title">
+                                Título
+                            </label>
+                            <input id="title" name="title" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Título de la entrada">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="description">
+                                Descripción
+                            </label>
+                            <textarea id="description" name="description" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-24" placeholder="Descripción de la entrada"></textarea>
+                        </div>
+                        <div id="pdf-field" class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="pdf">
+                                PDF
+                            </label>
+                            <input id="pdf" name="pdf" type="file" accept="application/pdf" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <p id="current-file" class="mt-2 text-sm text-gray-500 hidden">Archivo actual: <span id="file-name"></span></p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="tags">
+                                Etiquetas (separadas por comas)
+                            </label>
+                            <input id="tags" name="tags" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="tecnología, programación, diseño">
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="cancel-btn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Visualizador de entrada -->
+                <div id="entry-viewer" class="hidden bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button id="back-btn" class="text-blue-600 hover:text-blue-800 flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Volver
+                        </button>
+                        <div id="admin-actions" class="hidden space-x-2">
+                            <button id="edit-entry-btn" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button id="delete-entry-btn" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                    <h2 id="viewer-title" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                    <div class="flex items-center mb-4">
+                        <span id="viewer-date" class="text-sm text-gray-500 mr-4"></span>
+                        <div id="viewer-tags" class="flex flex-wrap gap-1"></div>
+                    </div>
+                    <p id="viewer-description" class="text-gray-700 mb-6"></p>
+
+                    <div class="mb-3">
+                        <h3 class="text-lg font-semibold text-gray-800">PDF adjunto:</h3>
+                    </div>
+                    <div id="pdf-viewer-container">
+                        <object id="pdf-viewer" data="" type="application/pdf">
+                            <p>Tu navegador no puede mostrar el PDF. <a id="pdf-download-link" href="" download>Descárgalo aquí</a>.</p>
+                        </object>
+                    </div>
+                </div>
+
+                <!-- Confirmación de eliminación modal -->
+                <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full relative">
+                        <!-- Botón de cierre (X) -->
+                        <div id="close-delete-modal" class="modal-close">
+                            <i class="fas fa-times text-gray-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Confirmar eliminación</h3>
+                        <p class="text-gray-600 mb-4">¿Estás seguro de que deseas eliminar esta entrada? Esta acción no se puede deshacer.</p>
+                        <div class="flex justify-end gap-2">
+                            <button id="cancel-delete-btn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
+                            <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de entradas -->
+                <div id="entries-container">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Entradas Recientes</h2>
+                    <div id="entries-list" class="grid grid-cols-1 gap-6">
+                        <!-- Las entradas se generan dinámicamente -->
+                    </div>
+                    <div id="pagination-container" class="flex justify-center mt-8 mb-4">
+                        <!-- Los botones de paginación se generarán dinámicamente -->
+                    </div>
+                    <div id="no-entries" class="hidden text-center py-12">
+                        <i class="fas fa-book text-4xl text-gray-400 mb-3"></i>
+                        <p class="text-gray-500">No hay entradas disponibles</p>
+                    </div>
+                    <div id="loading" class="hidden text-center py-12">
+                        <div class="lds-dual-ring"></div>
+                        <p class="text-gray-500 mt-3">Cargando entradas...</p>
+                    </div>
+                </div>
+                <div id="pagination-container" class="flex justify-center mt-6 space-x-2"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-auto">
+        <div class="container mx-auto px-4 py-6">
+            <p class="text-center text-gray-600 text-sm">&copy; 2025 Jose A. Salas / Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+/* Estructura para que el footer esté siempre abajo */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+main {
+    flex: 1;
+}
+.entrada-blog {
+    transition: transform 0.3s ease;
+}
+.entrada-blog:hover {
+    transform: translateY(-5px);
+}
+.tag {
+    transition: all 0.2s ease;
+}
+.tag:hover {
+    transform: scale(1.05);
+}
+#pdf-viewer {
+    height: 500px;
+    width: 100%;
+    border: 1px solid #e5e7eb;
+}
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 6px solid #1e40af;
+    border-color: #1e40af transparent #1e40af transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+.github-btn {
+    transition: transform 0.3s ease;
+}
+.github-btn:hover {
+    transform: scale(1.05);
+}
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.modal-close:hover {
+    transform: scale(1.1);
+}
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 62%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #718096;
+}
+
+/* Estilos para modo oscuro */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode header,
+body.dark-mode footer,
+body.dark-mode .bg-white {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .text-gray-800 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .text-gray-700,
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-500 {
+    color: #b0b0b0;
+}
+
+body.dark-mode input,
+body.dark-mode textarea {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark-mode .bg-gray-50 {
+    background-color: #121212;
+}
+
+body.dark-mode .bg-gray-100 {
+    background-color: #2d2d2d;
+}
+
+body.dark-mode .border-gray-300 {
+    border-color: #444;
+}
+
+/* Estilos especiales para tags en modo oscuro */
+body.dark-mode .tag,
+body.dark-mode .bg-blue-100 {
+    background-color: #2c4a7a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Modificar el color de los botones azules en modo oscuro */
+body.dark-mode .bg-blue-700,
+body.dark-mode .bg-blue-800 {
+    background-color: #3b82f6 !important;
+}
+
+/* Mejorar la visibilidad de las etiquetas activas en modo oscuro */
+body.dark-mode .tag.bg-blue-600 {
+    background-color: #60a5fa !important; /* Azul más claro para etiquetas activas */
+    color: #121212 !important; /* Texto más oscuro para mejor contraste */
+}
+
+/* Asegurar que los botones de texto azul sean más visibles */
+body.dark-mode .text-blue-600,
+body.dark-mode .text-blue-800 {
+    color: #60a5fa !important; 
+}
+
+/* Mejorar contraste del visor de PDF en modo oscuro */
+body.dark-mode #pdf-viewer {
+    border-color: #444;
+}
+
+body.dark-mode #pdf-viewer-container .bg-gray-50 {
+    background-color: #2d2d2d;
+    border-color: #444;
+}
+
+/* Mejorar formularios */
+input:focus, textarea:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Mejorar formularios en modo oscuro */
+body.dark-mode input:focus, 
+body.dark-mode textarea:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Mejorar legibilidad de inputs en modo oscuro */
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #888;
+}
+
+/* Estilos para notificaciones toast */
+.toast-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast-success {
+    background-color: #d1fae5;
+    border-left: 4px solid #10b981;
+    color: #065f46;
+}
+
+.toast-error {
+    background-color: #fee2e2;
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+}
+
+.toast-info {
+    background-color: #dbeafe;
+    border-left: 4px solid #3b82f6;
+    color: #1e40af;
+}
+
+.toast-icon {
+    margin-right: 12px;
+    font-size: 1.25rem;
+}
+
+.toast-message {
+    flex: 1;
+}
+
+.toast-close {
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 12px;
+    opacity: 0.7;
+}
+
+.toast-close:hover {
+    opacity: 1;
+}
+
+/* Mejoras para responsive */
+@media (max-width: 768px) {
+    #tag-cloud {
+        max-height: 120px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    
+    #entries-list {
+        margin-top: 20px;
+    }
+}
+
+/* Mejorar animación de carga */
+.lds-dual-ring:after {
+    animation: lds-dual-ring 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+/* Añadir una animación fade-in para las entradas */
+#entries-list > div {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mejorar visualización de la entrada en el visor */
+#viewer-description {
+    line-height: 1.6;
+}
+
+/* Mejorar espaciado en el visor de entradas */
+#entry-viewer {
+    position: relative;
+}
+
+#entry-viewer #admin-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#viewer-tags span {
+    transition: transform 0.2s ease;
+}
+
+#viewer-tags span:hover {
+    transform: scale(1.05);
+}
+
+.pagination-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    background-color: white;
+    color: #1F2937;
+    border: 1px solid #E5E7EB;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination-button:hover {
+    background-color: #F3F4F6;
+}
+
+.pagination-button.active {
+    background-color: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
+
+/* Para el modo oscuro */
+.dark-mode .pagination-button {
+    background-color: #1F2937;
+    color: #E5E7EB;
+    border-color: #4B5563;
+}
+
+.dark-mode .pagination-button:hover {
+    background-color: #374151;
+}
+
+.dark-mode .pagination-button.active {
+    background-color: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
