@@ -1,8 +1,8 @@
-# 🌟 MizonaDAW 🌟
+# 🌟 miZonaDAW 🌟
 
 ## 💫 ¡Bienvenido a mi rincón DAW!
 
-Hola, soy Jose y este es **MizonaDAW**, mi proyecto personal nacido de la pasión por la programación web y las ganas de compartir conocimiento. Como estudiante y entusiasta del Desarrollo de Aplicaciones Web, creé este espacio para todos aquellos que, como yo, aman sumergirse en el fascinante mundo del código.
+Hola, soy Jose y este es **miZonaDAW**, mi proyecto personal nacido de la pasión por la programación web y las ganas de compartir conocimiento. Como estudiante y entusiasta del Desarrollo de Aplicaciones Web, creé este espacio para todos aquellos que, como yo, aman sumergirse en el fascinante mundo del código.
 
 ## ❤️ ¿Por qué nació este proyecto?
 
