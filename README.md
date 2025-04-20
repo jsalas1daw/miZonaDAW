@@ -1,4 +1,4 @@
-# 🌟 miZonaDAW 🌟
+# miZonaDAW
 
 ## 💫 ¡Bienvenido a mi rincón DAW!
 
